@@ -10,6 +10,7 @@ CREATE TABLE stockcards (
     `flag` INT NOT NULL DEFAULT 0,
     `count_used` FLOAT NOT NULL DEFAULT 0,
     `count_left` FLOAT NOT NULL DEFAULT 0,
+    `price` DECIMAL(15, 2) NOT NULL DEFAULT 0,
     `stock` FLOAT NOT NULL DEFAULT 0,
     INDEX `BARCODE` (`barcode` ASC),
     PRIMARY KEY (`id`)

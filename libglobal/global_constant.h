@@ -93,6 +93,8 @@ namespace MSG_TYPE {
     const int DATABASE          = 19;
     const int CHECKSTOCK        = 20;
     const int UNIT              = 21;
+    const int STOCKCARD         = 22;
+    const int ITEMLINK          = 23;
 }
 
 namespace MSG_COMMAND {

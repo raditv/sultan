@@ -137,7 +137,8 @@ SOURCES += \
     main/logindialog.cpp \
     main/restartconfirmationdialog.cpp \
     main/settingdialog.cpp \
-    cashier/editpricecountdialog.cpp
+    cashier/editpricecountdialog.cpp \
+    report/stockcardwidget.cpp
 
 HEADERS += \ 
     gui_global.h \
@@ -229,7 +230,8 @@ HEADERS += \
     main/logindialog.h \
     main/restartconfirmationdialog.h \
     main/settingdialog.h \
-    cashier/editpricecountdialog.h
+    cashier/editpricecountdialog.h \
+    report/stockcardwidget.h
 
 FORMS += \
     mainwindow.ui \
