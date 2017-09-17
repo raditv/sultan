@@ -210,6 +210,15 @@ namespace ITEM_FLAG {
     const int PACKAGE           = 0x100;
 }
 
+namespace STOCK_CARD_TYPE {
+    const int INITIAL_STOCK     = 0;
+    const int PURCHASE          = 1;
+    const int SOLD              = 2;
+    const int CHECKSTOCK        = 3;
+    const int PURCHASE_RETURN   = 4;
+    const int SOLD_RETURN       = 5;
+}
+
 }
 
 #endif // GLOBAL_CONSTANT_H

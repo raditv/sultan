@@ -108,6 +108,7 @@ private slots:
     void openUnit();
     void openDateSetting();
     void resetDatabase();
+    void openStockCard();
 };
 
 }

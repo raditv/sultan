@@ -123,6 +123,8 @@
     <addaction name="separator"/>
     <addaction name="action_Transaction"/>
     <addaction name="action_MOney"/>
+    <addaction name="separator"/>
+    <addaction name="action_Stock_Card"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAdministration"/>
@@ -275,6 +277,11 @@
   <action name="action_Reset_Database">
    <property name="text">
     <string>&amp;Reset Database</string>
+   </property>
+  </action>
+  <action name="action_Stock_Card">
+   <property name="text">
+    <string>Stock &amp;Card</string>
    </property>
   </action>
  </widget>

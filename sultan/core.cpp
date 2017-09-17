@@ -136,7 +136,7 @@ void Core::init()
             qApp->processEvents();
             mSocketManager = new SocketManager(this);
             if(!mSocketManager->listen(Preference::getInt(SETTING::APP_PORT))) {
-                mMainWindow->showRestartError(tr("Server Socket Error"), tr("Port already in used"));
+                mMainWindow->showRestartError(tr("Server Socket Error"), tr("Port already in used.\nPossible another Sultan already openned"));
                 return;
             }
             connect(mSocketManager, SIGNAL(receivedMessage(LibG::Message*)), mMainServer, SLOT(messageReceived(LibG::Message*)));

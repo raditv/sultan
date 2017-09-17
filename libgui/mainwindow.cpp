@@ -51,6 +51,7 @@
 #include "checkstock/checkstockwidget.h"
 #include "initialstock/initialstockwidget.h"
 #include "unit/unitwidget.h"
+#include "report/stockcardwidget.h"
 #include "preference.h"
 #include "global_setting_const.h"
 #ifdef USE_DATE_SETTING
@@ -123,6 +124,7 @@ void MainWindow::setup()
     ui->action_Check_Stock->setEnabled(UserSession::hasPermission(PERMISSION::CHECK_STOCK));
     ui->actionInitial_Stock->setEnabled(UserSession::hasPermission(PERMISSION::INITIAL_STOCK));
     ui->actionUnits->setEnabled(UserSession::hasPermission(PERMISSION::UNIT));
+    ui->action_Stock_Card->setEnabled(UserSession::hasPermission(PERMISSION::ADMINISTRATOR));
     ui->action_Cashier->setShortcut(Qt::CTRL + Qt::Key_D);
 #ifndef USE_DATE_SETTING
     ui->actionDate_Setting->setEnabled(false);
@@ -253,6 +255,7 @@ void MainWindow::setupConnection()
     connect(ui->actionUnits, SIGNAL(triggered(bool)), SLOT(openUnit()));
     connect(ui->actionDate_Setting, SIGNAL(triggered(bool)), SLOT(openDateSetting()));
     connect(ui->action_Reset_Database, SIGNAL(triggered(bool)), SLOT(resetDatabase()));
+    connect(ui->action_Stock_Card, SIGNAL(triggered(bool)), SLOT(openStockCard()));
 }
 
 void MainWindow::loginSuccess()
@@ -575,5 +578,15 @@ void MainWindow::resetDatabase()
         msg.addData("user_id", UserSession::id());
         msg.addData("password", QString(QCryptographicHash::hash(str.toUtf8(),QCryptographicHash::Md5).toHex()));
         sendMessage(&msg);
+    }
+}
+
+void MainWindow::openStockCard()
+{
+    if(!ui->tabWidget->isTabAvailable([](QWidget* widget) -> bool {
+        return (dynamic_cast<StockCardWidget*>(widget) != nullptr);
+    })) {
+        auto widget = new StockCardWidget(mMessageBus, this);
+        ui->tabWidget->tbnAddTab(widget, tr("Unit"), ":/images/16x16/bagbox.png");
     }
 }
