@@ -94,7 +94,6 @@ AddItemDialog::AddItemDialog(LibG::MessageBus *bus, QWidget *parent) :
     ui->checkNote->setEnabled(false);
     ui->checkIngridient->setEnabled(false);
     ui->checkProduct->setEnabled(false);
-    ui->checkPackage->setEnabled(false);
 }
 
 AddItemDialog::~AddItemDialog()
@@ -278,16 +277,15 @@ void AddItemDialog::saveData()
         }
         data["sell_price"] = prices;
     }
-    if((flag & ITEM_FLAG::PACKAGE) == 0) {
-        data["barcode_link"] = "";
-        data["count_link"] = 0;
-    } else {
-        data["barcode_link"] = ui->linePackageItem->text();
-        data["count_link"] = ui->doublePackageQty->value();
+    if((flag & ITEM_FLAG::PACKAGE) != 0) {
+        QVariantMap linkdata;
+        linkdata["barcode_link"] = ui->linePackageItem->text();
+        linkdata["count_link"] = ui->doublePackageQty->value();
         if(ui->linePackageItem->text().isEmpty() || ui->doublePackageQty->value() == 0) {
             QMessageBox::critical(this, tr("Error"), tr("Box package not correctly filled"));
             return;
         }
+        data["box"] = linkdata;
     }
     Message msg(MSG_TYPE::ITEM, MSG_COMMAND::INSERT);
     if(mIsUpdate) {

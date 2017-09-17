@@ -219,6 +219,11 @@ namespace STOCK_CARD_TYPE {
     const int SOLD_RETURN       = 5;
 }
 
+namespace ITEM_LINK_TYPE {
+    const int BOX           = 0;
+    const int INGRIDIENT    = 1;
+}
+
 }
 
 #endif // GLOBAL_CONSTANT_H

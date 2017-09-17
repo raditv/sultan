@@ -44,6 +44,7 @@ Message ItemAction::insert(Message *msg)
     LibG::Message message(msg);
     const int flag = msg->data("flag").toInt();
     const QVariant &sellPrice = msg->takeData("sell_price");
+    QVariantMap box = msg->takeData("box").toMap();
     if(mDb->isSupportTransaction()) mDb->beginTransaction();
     if(!mDb->insert(mTableName, msg->data())) {
         message.setError(mDb->lastError().text());
@@ -60,6 +61,11 @@ Message ItemAction::insert(Message *msg)
                 mDb->insert("sellprices", d);
             }
         }
+        if((flag & ITEM_FLAG::PACKAGE) != 0) {
+            box.insert("barcode", msg->data("barcode"));
+            box.insert("type", ITEM_LINK_TYPE::BOX);
+            mDb->insert("itemlinks", box);
+        }
     }
     if(mDb->isSupportTransaction()) {
         if(!mDb->commit()) {
@@ -75,6 +81,7 @@ Message ItemAction::update(Message *msg)
     LibG::Message message(msg);
     QVariantMap data = msg->data("data").toMap();
     QVariant sellprice = data["sell_price"];
+    QVariantMap box = msg->takeData("box").toMap();
     const int flag = data["flag"].toInt();
     data.remove("sell_price");
     mDb->where(mIdField % " = ", msg->data(mIdField));
@@ -94,6 +101,13 @@ Message ItemAction::update(Message *msg)
             }
             res = mDb->where("id = ", msg->data("id"))->get(mTableName);
             message.setData(res.first());
+        }
+        if((flag & ITEM_FLAG::PACKAGE) != 0) {
+            mDb->where("barcode = ", msg->data("barcode"))->where("type = ", ITEM_LINK_TYPE::BOX);
+            mDb->update("itemlinks", box);
+        } else {
+            mDb->where("barcode = ", msg->data("barcode"))->where("type = ", ITEM_LINK_TYPE::BOX);
+            mDb->del("itemlinks");
         }
     }
     return message;
