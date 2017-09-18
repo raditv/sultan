@@ -134,6 +134,21 @@ void AddItemDialog::reset(bool isAddAgain)
     ui->doubleStock->setValue(0);
     applyItemFlagToCheckbox(ITEM_FLAG::CALCULATE_STOCK | ITEM_FLAG::PURCHASE | ITEM_FLAG::SELLABLE);
     ui->doubleStock->setEnabled(true);
+    ui->tabWidget->setTabEnabled(ItemLink, false);
+    ui->labelWarningItemLink->hide();
+}
+
+void AddItemDialog::openBarcode(const QString &barcode)
+{
+    Message msg(MSG_TYPE::ITEM, MSG_COMMAND::GET);
+    msg.addData("barcode", barcode);
+    sendMessage(&msg);
+    Message msg2(MSG_TYPE::ITEMLINK, MSG_COMMAND::QUERY);
+    msg2.addFilter("barcode", COMPARE::EQUAL, barcode);
+    mBarcodeLinkRequest = sendMessage(&msg2);
+    Message msg3(MSG_TYPE::ITEMLINK, MSG_COMMAND::QUERY);
+    msg3.addFilter("barcode_link", COMPARE::EQUAL, barcode);
+    mBarcodeOtherLinkRequest = sendMessage(&msg3);
 }
 
 void AddItemDialog::fill(const QVariantMap &data)
@@ -146,6 +161,7 @@ void AddItemDialog::fill(const QVariantMap &data)
     ui->lineBarcode->setEnabled(false);
     GuiUtil::selectCombo(ui->comboCategory, data["category_id"].toInt());
     GuiUtil::selectCombo(ui->comboSuplier, data["suplier_id"].toInt());
+    GuiUtil::selectComboByText(ui->comboUnit, data["unit"].toString());
     ui->labelError->hide();
     mCurrentSuplier = data["suplier_id"].toInt();
     mCUrrentCategory = data["category_id"].toInt();
@@ -184,10 +200,14 @@ void AddItemDialog::messageReceived(LibG::Message *msg)
 {
     if(msg->isTypeCommand(MSG_TYPE::ITEM, MSG_COMMAND::GET)) {
         if(msg->isSuccess()) {
-            ui->labelError->setText(tr("Items with barcode already exist : %1").arg(msg->data("name").toString()));
-            ui->labelError->show();
-            ui->lineBarcode->setFocus();
-            ui->lineBarcode->selectAll();
+            if(mIsUpdate) {
+                fill(msg->data());
+            } else {
+                ui->labelError->setText(tr("Items with barcode already exist : %1").arg(msg->data("name").toString()));
+                ui->labelError->show();
+                ui->lineBarcode->setFocus();
+                ui->lineBarcode->selectAll();
+            }
         } else {
             ui->labelError->hide();
             mIsOk = true;
@@ -231,7 +251,23 @@ void AddItemDialog::messageReceived(LibG::Message *msg)
         ui->tablePrice->getModel()->refresh();
     } else if(msg->isTypeCommand(MSG_TYPE::ITEM, MSG_COMMAND::CASHIER_PRICE)) {
         mPriceList = msg->data("prices").toList();
+        ui->labelPackageName->setText(msg->data("item").toMap()["name"].toString());
         updatePackagePrice();
+    } else if(msg->isTypeCommand(MSG_TYPE::ITEMLINK, MSG_COMMAND::QUERY)) {
+        const QVariantList &l = msg->data("data").toList();
+        if(mBarcodeLinkRequest == msg->getUniqueId()) {
+            if(l.size() > 0) {
+                const QVariantMap &m = l[0].toMap();
+                ui->linePackageItem->setText(m["barcode_link"].toString());
+                ui->doublePackageQty->setValue(m["count_link"].toFloat());
+                getItemPrice();
+            }
+        } else if(mBarcodeOtherLinkRequest == msg->getUniqueId()) {
+            if(l.size() > 0) {
+                ui->tabWidget->setTabEnabled(ItemLink, true);
+                ui->labelWarningItemLink->show();
+            }
+        }
     }
 }
 
@@ -484,7 +520,7 @@ void AddItemDialog::openSearchItem()
             return;
         }
         ui->linePackageItem->setText(data["barcode"].toString());
-        ui->labelPackageName->setText(data["name"].toString());
+        //ui->labelPackageName->setText(data["name"].toString());
         getItemPrice();
     }
 }

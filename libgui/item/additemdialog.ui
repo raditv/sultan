@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>804</width>
-    <height>493</height>
+    <width>838</width>
+    <height>539</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -194,6 +194,19 @@
         </widget>
        </item>
        <item>
+        <widget class="QLabel" name="labelWarningItemLink">
+         <property name="styleSheet">
+          <string notr="true">color: red; border: 1px solid red; padding: 5px; border-radius: 5px;</string>
+         </property>
+         <property name="text">
+          <string>This item has link(s) to other item. If you change price, you should change other item price(s). Please check on &quot;Item Link&quot; tab.</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -272,8 +285,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>423</width>
-              <height>281</height>
+              <width>442</width>
+              <height>327</height>
              </rect>
             </property>
             <attribute name="label">
@@ -392,8 +405,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>423</width>
-              <height>281</height>
+              <width>442</width>
+              <height>329</height>
              </rect>
             </property>
             <attribute name="label">
@@ -594,6 +607,11 @@
           </layout>
          </item>
         </layout>
+       </widget>
+       <widget class="QWidget" name="itemlink">
+        <attribute name="title">
+         <string>Item Link</string>
+        </attribute>
        </widget>
       </widget>
      </item>

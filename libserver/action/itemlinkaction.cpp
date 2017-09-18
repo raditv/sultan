@@ -3,7 +3,7 @@
 using namespace LibServer;
 
 ItemLinkAction::ItemLinkAction():
-    ServerAction("stocklinks", "id")
+    ServerAction("itemlinks", "id")
 {
 
 }

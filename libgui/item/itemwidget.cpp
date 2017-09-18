@@ -157,8 +157,9 @@ void ItemWidget::updateItemClicked(const QModelIndex &index)
 {
     if(!index.isValid()) return;
     auto item = static_cast<TableItem*>(index.internalPointer());
-    mAddDialog->fill(item->data());
+    mAddDialog->reset();
     mAddDialog->setAsUpdate();
+    mAddDialog->openBarcode(item->data("barcode").toString());
     mAddDialog->show();
 }
 

@@ -34,11 +34,11 @@ class AddItemDialog : public QDialog, public LibG::MessageHandler
     Q_OBJECT
 
 public:
-    enum Tab { Price, Package, Ingridient };
+    enum Tab { Price, Package, Ingridient, ItemLink };
     AddItemDialog(LibG::MessageBus *bus, QWidget *parent = 0);
     ~AddItemDialog();
     void reset(bool isAddAgain = false);
-    void fill(const QVariantMap &data);
+    void openBarcode(const QString &barcode);
     void setAsUpdate();
     void disableAddAgain();
     void setBarcode(const QString &barcode);
@@ -47,6 +47,7 @@ public:
 protected:
     void messageReceived(LibG::Message *msg) override;
     void showEvent(QShowEvent *event) override;
+    void fill(const QVariantMap &data);
 
 private:
     Ui::AddItemDialog *ui;
@@ -57,6 +58,8 @@ private:
     bool mIsOk = false;
     bool mIsReturnPressed = false;
     bool mIsSuccess = false;
+    int mBarcodeLinkRequest = -1;
+    int mBarcodeOtherLinkRequest = -1;
     QString mCurrentUnit;
     QVariantList mPriceList;
 

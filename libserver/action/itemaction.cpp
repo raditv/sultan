@@ -81,7 +81,7 @@ Message ItemAction::update(Message *msg)
     LibG::Message message(msg);
     QVariantMap data = msg->data("data").toMap();
     QVariant sellprice = data["sell_price"];
-    QVariantMap box = msg->takeData("box").toMap();
+    QVariantMap box = data.take("box").toMap();
     const int flag = data["flag"].toInt();
     data.remove("sell_price");
     mDb->where(mIdField % " = ", msg->data(mIdField));
