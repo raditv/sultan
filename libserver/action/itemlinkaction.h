@@ -9,6 +9,9 @@ class ItemLinkAction : public ServerAction
 {
 public:
     ItemLinkAction();
+
+protected:
+    void selectAndJoin() override;
 };
 
 }

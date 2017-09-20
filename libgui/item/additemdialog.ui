@@ -199,7 +199,7 @@
           <string notr="true">color: red; border: 1px solid red; padding: 5px; border-radius: 5px;</string>
          </property>
          <property name="text">
-          <string>This item has link(s) to other item. If you change price, you should change other item price(s). Please check on &quot;Item Link&quot; tab.</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This item has link to other item(s). If you change price, you should change other item(s) price. Please check on &amp;quot;Item Link&amp;quot; tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -227,7 +227,7 @@
         <enum>QTabWidget::North</enum>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="price">
         <attribute name="title">
@@ -285,8 +285,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>442</width>
-              <height>327</height>
+              <width>409</width>
+              <height>273</height>
              </rect>
             </property>
             <attribute name="label">
@@ -405,8 +405,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>442</width>
-              <height>329</height>
+              <width>409</width>
+              <height>273</height>
              </rect>
             </property>
             <attribute name="label">
@@ -612,6 +612,18 @@
         <attribute name="title">
          <string>Item Link</string>
         </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_11">
+         <item>
+          <widget class="LibGUI::TableWidget" name="tableItemLink" native="true"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_11">
+           <property name="text">
+            <string>* double click row to edit item</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </widget>
      </item>

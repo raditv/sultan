@@ -6,6 +6,6 @@ CREATE TABLE itemlinks (
     `count_link` FLOAT NOT NULL DEFAULT '0'
 );
 -- separator
-CREATE INDEX ITEMLINKBARCODE ON itemstocklinks (barcode);
+CREATE INDEX ITEMLINKBARCODE ON itemlinks (barcode);
 -- separator
-CREATE INDEX ITEMLINKBARCODELINK ON itemstocklinks (barcode_link);
+CREATE INDEX ITEMLINKBARCODELINK ON itemlinks (barcode_link);

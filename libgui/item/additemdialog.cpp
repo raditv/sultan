@@ -94,6 +94,15 @@ AddItemDialog::AddItemDialog(LibG::MessageBus *bus, QWidget *parent) :
     ui->checkNote->setEnabled(false);
     ui->checkIngridient->setEnabled(false);
     ui->checkProduct->setEnabled(false);
+    //item links table
+    model = ui->tableItemLink->getModel();
+    model->setMessageBus(mMessageBus);
+    model->addColumn("barcode", tr("Barcode"));
+    model->addColumn("name", tr("Name"));
+    model->setTypeCommand(MSG_TYPE::ITEMLINK, MSG_COMMAND::QUERY);
+    GuiUtil::setColumnWidth(ui->tablePrice->getTableView(), QList<int>() << 150 << 100);
+    ui->tableItemLink->getTableView()->horizontalHeader()->setStretchLastSection(true);
+    connect(ui->tableItemLink->getTableView(), SIGNAL(doubleClicked(QModelIndex)), SLOT(tableItemLinkDoubleClicked()));
 }
 
 AddItemDialog::~AddItemDialog()
@@ -140,6 +149,7 @@ void AddItemDialog::reset(bool isAddAgain)
 
 void AddItemDialog::openBarcode(const QString &barcode)
 {
+    mCurrentBarcode = barcode;
     Message msg(MSG_TYPE::ITEM, MSG_COMMAND::GET);
     msg.addData("barcode", barcode);
     sendMessage(&msg);
@@ -156,7 +166,8 @@ void AddItemDialog::fill(const QVariantMap &data)
     int flag = data["flag"].toInt();
     ui->lineBarcode->setText(data["barcode"].toString());
     ui->lineName->setText(data["name"].toString());
-    ui->doubleBuyPrice->setValue(data["buy_price"].toDouble());
+    if((flag & ITEM_FLAG::PACKAGE) == 0)
+        ui->doubleBuyPrice->setValue(data["buy_price"].toDouble());
     ui->doubleSellPrice->setValue(data["sell_price"].toDouble());
     ui->lineBarcode->setEnabled(false);
     GuiUtil::selectCombo(ui->comboCategory, data["category_id"].toInt());
@@ -192,6 +203,7 @@ void AddItemDialog::disableAddAgain()
 void AddItemDialog::setBarcode(const QString &barcode)
 {
     ui->lineBarcode->setText(barcode);
+    mCurrentBarcode = barcode;
     barcodeDone();
     ui->lineName->setFocus(Qt::TabFocusReason);
 }
@@ -250,8 +262,10 @@ void AddItemDialog::messageReceived(LibG::Message *msg)
         FlashMessageManager::showMessage(tr("Price deleted successfully"));
         ui->tablePrice->getModel()->refresh();
     } else if(msg->isTypeCommand(MSG_TYPE::ITEM, MSG_COMMAND::CASHIER_PRICE)) {
+        const QVariantMap &it = msg->data("item").toMap();
         mPriceList = msg->data("prices").toList();
-        ui->labelPackageName->setText(msg->data("item").toMap()["name"].toString());
+        ui->labelPackageName->setText(it["name"].toString());
+        mPackBuyPrice = it["buy_price"].toDouble();
         updatePackagePrice();
     } else if(msg->isTypeCommand(MSG_TYPE::ITEMLINK, MSG_COMMAND::QUERY)) {
         const QVariantList &l = msg->data("data").toList();
@@ -266,6 +280,8 @@ void AddItemDialog::messageReceived(LibG::Message *msg)
             if(l.size() > 0) {
                 ui->tabWidget->setTabEnabled(ItemLink, true);
                 ui->labelWarningItemLink->show();
+                ui->tableItemLink->getModel()->setFilter("barcode_link", COMPARE::EQUAL, mCurrentBarcode);
+                ui->tableItemLink->getModel()->refresh();
             }
         }
     }
@@ -412,6 +428,7 @@ void AddItemDialog::checkWidget()
         if(ui->checkPackage->isChecked())
             ui->groupMultiPrice->setChecked(false);
         ui->groupMultiPrice->setEnabled(!ui->checkPackage->isChecked());
+        ui->doubleBuyPrice->setEnabled(!ui->checkPackage->isChecked());
     }
     if(sender == ui->checkEditPrice) {
         ui->groupMultiPrice->setChecked(false);
@@ -553,5 +570,19 @@ double AddItemDialog::updatePackagePrice()
         }
     }
     ui->labelPackagePrice->setText(Preference::toString(total));
+    ui->doubleBuyPrice->setValue(mPackBuyPrice * count);
     return total;
+}
+
+void AddItemDialog::tableItemLinkDoubleClicked()
+{
+    const QModelIndex &i = ui->tableItemLink->getTableView()->currentIndex();
+    if(i.isValid()) {
+        auto item = static_cast<TableItem*>(i.internalPointer());
+        AddItemDialog dialog(mMessageBus, this);
+        dialog.reset();
+        dialog.setAsUpdate();
+        dialog.openBarcode(item->data("barcode").toString());
+        dialog.exec();
+    }
 }

@@ -60,8 +60,10 @@ private:
     bool mIsSuccess = false;
     int mBarcodeLinkRequest = -1;
     int mBarcodeOtherLinkRequest = -1;
+    double mPackBuyPrice;
     QString mCurrentUnit;
     QVariantList mPriceList;
+    QString mCurrentBarcode;
 
     void saveData();
     int getItemFlagFromCheckbox();
@@ -80,6 +82,7 @@ private slots:
     void openSearchItem();
     void getItemPrice();
     double updatePackagePrice();
+    void tableItemLinkDoubleClicked();
 
 signals:
     void success();
