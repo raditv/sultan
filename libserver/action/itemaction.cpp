@@ -22,6 +22,7 @@
 #include "db.h"
 #include "queryhelper.h"
 #include "util.h"
+#include "util/itemutil.h"
 #include <QStringRef>
 #include <QStringBuilder>
 #include <QDataStream>
@@ -109,6 +110,8 @@ Message ItemAction::update(Message *msg)
             mDb->where("barcode = ", msg->data("barcode"))->where("type = ", ITEM_LINK_TYPE::BOX);
             mDb->del("itemlinks");
         }
+        ItemUtil util(mDb);
+        util.updateBuyPrice(msg->data(mIdField).toString());
     }
     return message;
 }

@@ -37,6 +37,9 @@ public:
 protected:
     void selectAndJoin() override;
     QMap<QString, QString> fieldMap() const override;
+
+private:
+    QStringList mBarcodeChecked;
 };
 
 }

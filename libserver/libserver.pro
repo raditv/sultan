@@ -67,7 +67,8 @@ SOURCES += \
     action/checkstockaction.cpp \
     action/unitaction.cpp \
     action/stockcardaction.cpp \
-    action/itemlinkaction.cpp
+    action/itemlinkaction.cpp \
+    util/itemutil.cpp
 
 HEADERS += \ 
     server_global.h \
@@ -96,4 +97,5 @@ HEADERS += \
     action/checkstockaction.h \
     action/unitaction.h \
     action/stockcardaction.h \
-    action/itemlinkaction.h
+    action/itemlinkaction.h \
+    util/itemutil.h
